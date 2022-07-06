@@ -1,0 +1,24 @@
+; /etc/rstudio-connect/rstudio-connect.gcfg
+
+; RStudio Connect sample configuration
+[Server]
+SenderEmail = account@company.com
+Address = http://0.0.0.0:3939
+
+; The persistent data directory mounted into our container.
+DataDir = /data
+
+[Licensing]
+LicenseType = local
+
+; Use and configure local database.
+[Database]
+Provider = sqlite
+
+[HTTP]
+; RStudio Connect will listen on this network address for HTTP connections.
+Listen = :3939
+
+[Authentication]
+; Specifies the type of user authentication.
+Provider = password
