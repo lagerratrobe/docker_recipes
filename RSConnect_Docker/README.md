@@ -27,33 +27,34 @@ However, it's actually quite easy to expand upon on that basic install to meet t
 
 ### Create Dockerfile
 
-Part 1 is a simple Dockerfile that pulls in the Docker Hub image and sets up a few things.
+Simple Dockerfile that pulls in the Docker Hub image and sets up a few things.
 
 ```
 FROM rstudio/rstudio-connect
 
-# 1. CONFIG FILE SETUP
+# 1. Copy our configuration over the default install configuration
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 
-# 2. EXPOSE LISTENING PORT
-EXPOSE 3939
+# 2. Copy our license key into the container
+COPY license.key /etc/rstudio-server/license.key
 
-# 3. ACTIVATE LICENSE
-RUN /opt/rstudio-connect/bin/license-manager activate XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+# 3. Activate the license
+RUN /opt/rstudio-connect/bin/license-manager activate `cat /etc/rstudio-server/license.key`
+
+# 4. Expose the configured listen port
+EXPOSE 3939
 
 # Launch Connect.
 CMD ["--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]
 ENTRYPOINT ["/opt/rstudio-connect/bin/connect"]
+
 ```
 
-1. It copies a local `rstudio-connect.gcfg` file into the container, which we then call on at runtime via the `--config` flag.
-2. It specifies the internal (Docker) port to be 3939
-3. It runs the license manager against our lic key  TODO: point at license.lic
-
+Note: This relies on having a `license.key` file that contains a valid RStudio Connect key.
 
 ### Create Connect Config File
 
-In addition to the Dockerfile, we need a rstudio-connect.gcfg file.  Below is a minimal one that works.
+In addition to the Dockerfile, we need a `rstudio-connect.gcfg` file.  Below is a minimal one that works.
 
 ```
 ; /etc/rstudio-connect/rstudio-connect.gcfg
@@ -88,8 +89,10 @@ When you build the image, you should see that your `rstudio-connect.gcfg` is bei
 
 ```
 $ docker build -t rstudio/connect-docker .
-<snip>
+```
+Should see the following:
 
+```
 Step 2/6 : COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 <snip>
 
@@ -108,7 +111,7 @@ Then, you can run the image.
 $ docker run -d --rm --privileged -p 3939:3939 -v /data/connect_data/:/data rstudio/connect-docker:latest
 ```
 
-The `docker run` command id where you can specify what local directory you want Docker to mount as `/data` by using the `-v` flag.  In my case, I'm using `/data/connect_data`.
+The `docker run` command is where you can specify what local directory you want Docker to mount as `/data` by using the `-v` flag.  In my case, I'm using `/data/connect_data`.
 
 ### Verify Container is running as desired
 
@@ -135,8 +138,6 @@ time="2022-07-06T19:54:35.287Z" level=info msg="Creating the initial worker;
 ```
 
 ### Shutdown the Container
-
-Accomplished via the `docker stop` command
 
 ```
 $ docker stop 24a365d28559
