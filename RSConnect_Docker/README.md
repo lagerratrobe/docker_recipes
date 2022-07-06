@@ -1,4 +1,4 @@
-Installing RStudio Connect With Dropbox
+Installing RStudio Connect With Docker
 ---------------------------------------
 
 Instructions for getting Connect running in a local Docker container that meets the  the following requirements:
