@@ -143,3 +143,40 @@ time="2022-07-06T19:54:35.287Z" level=info msg="Creating the initial worker;
 $ docker stop 24a365d28559
 24a365d28559
 ```
+
+### Adding Docker as a Service
+
+To have the system automatically start and stop the Docker instance, you can create a service file in systemd.
+
+```
+$ sudo vi /etc/systemd/system/docker.connect-docker.service
+
+[Unit]
+Description=RStudio Connect Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker exec connect-docker stop
+ExecStart=/usr/bin/docker run --rm --privileged \
+    -v /data/connect_data/:/data \
+    -p 3939:3939 \
+    rstudio/connect-docker:latest
+
+[Install]
+WantedBy=default.target
+
+```
+
+Then you can enable and start/stop the service using `systemctl`.
+
+```
+$ systemctl enable docker.connect-docker
+
+$ sudo systemctl start docker.connect-docker.service 
+```
+
+
+
