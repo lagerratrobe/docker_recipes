@@ -1,3 +1,4 @@
+
 FROM rstudio/rstudio-connect
 
 # Copy our configuration over the default install configuration
@@ -8,6 +9,10 @@ COPY license.key /etc/rstudio-server/license.key
 
 # Activate the license 
 RUN /opt/rstudio-connect/bin/license-manager activate `cat /etc/rstudio-server/license.key`
+
+# Update the timezone
+ENV TZ=America/Los_Angeles
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Expose the configured listen port
 EXPOSE 3939
