@@ -1,10 +1,14 @@
 FROM rstudio/rstudio-workbench
 
+# Setup system libe
+RUN apt-get update
+RUN apt-get install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev
+
 # 1. Copy the offline lic file into the image
 COPY license.key /etc/rstudio/license.key
 
 # 2. Activate the license
-RUN /usr/lib/rstudio-server/bin/license-manager activate `cat /etc/rstudio/license.key`
+RUN /usr/lib/rstudio-server/bin/license-manager activate-file /etc/rstudio/license.key
 
 # Update the timezone
 ENV TZ=America/Los_Angeles
@@ -37,3 +41,5 @@ RUN printf "rsession-which-r=/opt/R/4.1.0/bin/R \n" >> /etc/rstudio/rserver.conf
 # 8. Set the CRAN binary repo 
 RUN printf "CRAN=https://packagemanager.rstudio.com/cran/__linux__/bionic/latest \n" >> /etc/rstudio/repos.conf
 
+# 9, Add an Rprofile.site to set repo at CLI
+COPY Rprofile.site /opt/R/4.1.0/lib/R/etc/Rprofile.site
