@@ -215,7 +215,7 @@ $ docker stop 24a365d28559
 To have the system automatically start and stop the Docker instance, you can create a service file in systemd.
 
 ```
-$ sudo vi /etc/systemd/system/docker.connect-docker.service
+$ sudo vi /etc/systemd/system/connect-docker.service
 
 [Unit]
 Description=RStudio Connect Service
@@ -239,8 +239,8 @@ WantedBy=default.target
 Then you can enable and start/stop the service using `systemctl`.
 
 ```
-$ systemctl enable docker.connect-docker
+$ systemctl enable connect-docker
 
-$ sudo systemctl start docker.connect-docker.service 
+$ sudo systemctl start connect-docker.service 
 ```
 
