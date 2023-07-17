@@ -72,7 +72,7 @@ Using Connect as an example, below is the typical workflow that is used to deplo
 
 There are specific Dockerfiles and additional info in each of the application level dirs of this repo to configure each app in very specific ways.
 
-#### IT IS NOT RECOMMENDED THAT YOU DEPLOY Connect USING THESE GENERIC INSTRUCTIONS !!!!
+#### IT IS NOT RECOMMENDED THAT YOU DEPLOY Connect USING THE INSTRUCTIONS BELOW!!!!
 
 ### Basic Docker Hub Install
 
