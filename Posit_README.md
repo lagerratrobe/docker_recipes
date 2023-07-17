@@ -64,17 +64,15 @@ $ docker build -t rstudio/connect-docker .
 
 ## Generic Overview of Deployment
 
-Using Connect as an example, below is the typical workflow that is used to deploy a Posit application.  
-
-Installing RStudio Connect With Docker
----------------------------------------
-
-Instructions for getting Connect running in a local Docker container that meets the  the following requirements:
+Using Connect as an example, below is the typical workflow that is used to deploy a Posit application.  These instructions are intended to show a generic process for getting Connect running in a local Docker container that meets the  the following requirements:
 
 - Picks up License key at runtime
 - Has persistent storage for users and published work
 - Respects options in Connect cfg file
 
+There are specific Dockerfiles and additional info in each of the application level dirs of this repo to configure each app in very specific ways.
+
+#### IT IS NOT RECOMMENDED THAT YOU DEPLOY Connect USING THESE GENERIC INSTRUCTIONS !!!!
 
 ### Basic Docker Hub Install
 
@@ -153,7 +151,7 @@ Provider = password
 
 ### Tying it all together
 
-When you build the image, you should see that your `rstudio-connect.gcfg` is being copied into the container  and that the license manager has activated your lic key.
+When you build the image, you should see that your `rstudio-connect.gcfg` is being copied into the container and that the license manager has activated your lic key.
 
 ```
 $ docker build -t rstudio/connect-docker .
