@@ -11,3 +11,8 @@ The files and instructions in this directory will create a containerized instanc
 7. Gitbuilder R repo pulling from Github and setup as "git-hello-world on PM
 8. Combined repo with Curated Cran and Gitbuilder sources as "NSW_Internal" on PM
 
+## Prerequisites
+* Host machine with the docker CLI setup
+* Github access
+* A valid Package Manager license file
+
