@@ -64,3 +64,71 @@ ExecStart=/usr/bin/docker run --rm \
 $ sudo systemctl enable package_manager-docker.service
 $ sudo systemctl start package_manager-docker.service
 ```
+
+### 6. Exec into the running Package Manager container to configure repos
+Find the container that is running Package Manager and `exec` into it.  This will allow you to then run the `rspm` CLI tool to add some repos. (Note that the `docker ps` command will output more than the 2 columns shown here.  I have truncated the output to just "CONTAINER ID" and "IMAGE" for clarity.) 
+```
+$ docker ps
+CONTAINER ID IMAGE
+dc2007db0e93 rstudio/package_manager-docker:latest
+
+$ docker exec -it dc2007db0e93 bash
+```
+Once you are logged into the container, you can start adding repos.
+
+### 7. Add a CRAN repo
+Note that we are naming this PM repo "cran".
+```
+rstudio-pm$ rspm create repo --name=cran --description='Access CRAN packages'
+rstudio-pm$ rspm subscribe --repo=cran --source=cran
+rstudio-pm$ rspm sync --type=cran
+```
+
+### 8. Add a PyPi repo
+Note that we are naming this PM repo "pypi".
+```
+rstudio-pm$ rspm create repo --name=pypi --type=python --description='Access PyPI packages'
+rstudio-pm$ rspm subscribe --repo=pypi --source=pypi
+rstudio-pm$ rspm sync --type=pypi
+```
+
+### 9. Add a Gitbuilder R repo
+Note that we are naming this PM repo "git-hello-world".
+```
+rstudio-pm$ rspm create source \
+--type=git \
+--name=git-hello-world
+
+rstudio-pm$ rspm create git-builder \
+--url=https://github.com/lagerratrobe/R_Pkg_Hello_World.git \
+--source=git-hello-world \
+--build-trigger=commits
+
+rstudio-pm$ rspm create repo \
+--name=git-hello-world \
+--description='Git Sourced Private R Package'
+
+rstudio-pm$ rspm subscribe \
+--source=git-hello-world 
+--repo=git-hello-world
+```
+
+### 10. Add a Curated CRAN repo
+This will contain a subset of packages to show how whitelisting works.  (Note that the "snapshot" date can be changed to whatever you want.)
+```
+$ rspm create source --name=restricted_cran --type=curated-cran
+$ rspm add --packages=ggplot2,dplyr,stringr,sf,terra --source=restricted_cran
+$ rspm add --packages=ggplot2,dplyr,stringr,sf,terra --source=restricted_cran --commit --snapshot=2023-07-06
+$ rspm create repo --name=Restricted_CRAN --description='Restricted CRAN'
+$ rspm subscribe --repo=Restricted_CRAN --source=restricted_cran
+```
+
+### 11. Add a repo with multiple sources
+So far, we have created repos that contain a single source in them.  However it is useful to show that a Package Manager repo can contain multiple sources.
+```
+$ rspm create repo --name=NSW_Internal --description='Restricted CRAN & Private R'
+Repository: NSW_Internal - Restricted CRAN & Private R - R
+
+$ rspm subscribe --repo=NSW_Internal --source=restricted_cran
+$ rspm subscribe --repo=NSW_Internal --source=git-hello-world
+```
