@@ -16,3 +16,31 @@ The files and instructions in this directory will create a containerized instanc
 * Github access
 * A valid Package Manager license file
 
+## Setup Steps
+
+### 1. Update the Dockerfile to point at your lic file
+Replace "RSPM_2023-06-14.lic" in the Dockerfile entry below with the name of your file.
+```
+# Copy our license key into the container
+COPY RSPM_2023-06-14.lic /etc/rstudio-pm/license.lic
+```
+
+### 2. Change the name of the host to match your machine
+Edit the rstudio-pm.gcfg (included in this repo) and replace "posit2" in the line below with that name or IP of your host.
+```
+Address = http://posit2:4242
+```
+
+### 3. Build
+Using the docker CLI, build from within the same directory as the Dockerfile.
+```
+$ docker build -t rstudio/package_manager-docker .
+```
+
+### 4. Test that the application runs
+Run the application in interactive mode, so you can see any errors that might be generated.
+```
+$ docker run -it -p 4242:4242 rstudio/package_manager-docker:latest
+```
+You should be able to connect to `localhost:4242` and see Package Manager running there.
+
