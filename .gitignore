@@ -2,3 +2,6 @@ license.lic
 license.key
 
 .Rproj.user
+
+*.lic
+*.key

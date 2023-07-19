@@ -33,16 +33,13 @@ RUN wget https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-4.3.0_1_amd64.deb && gdebi
 # Copy our configuration over the default install configuration
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 
-# Copy our license key into the container
-COPY license.key /etc/rstudio-server/license.key
+# Copy our license file into the container
+COPY Connect_License.lic /etc/rstudio-server/Connect_License.lic
 
 # Activate the license 
-RUN /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-server/license.key
+RUN /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-server/Connect_License.lic
 
 # Update the timezone
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Expose the configured listen port
-EXPOSE 3939
 
