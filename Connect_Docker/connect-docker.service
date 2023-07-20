@@ -12,7 +12,7 @@ ExecStart=/usr/bin/docker run --rm \
     --mount type=bind,source=/etc/passwd,target=/etc/passwd \
     --mount type=bind,source=/etc/shadow,target=/etc/shadow \
     --mount type=bind,source=/etc/group,target=/etc/group \
-    -v /data/connect_data/:/data \
+    -v /data/connect_data:/data \
     -v /tmp:/tmp \
     -p 3939:3939 \
     rstudio/connect-docker:latest
