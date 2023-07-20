@@ -6,7 +6,7 @@ The files and instructions in this directory will create a containerized instanc
 2. R versions 3.6.2, 4.1.3, 4.2.0, 4.3.0
 3. Python versions 3.8.10, 3.9.5
 4. Host's `/data/connect_data/` dir mounted as `/data` in container
-5. Host's Linux users and groups mounted in the container
+5. Password authentication and host's Linux users and groups mounted into the container
 6. TinyTeX install fixed and pinned to v. 2023-04-08 of texlive 
 7. Quarto version 1.3.340
 8. R reticulate installed in R version 4.2.0
