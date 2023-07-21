@@ -13,6 +13,8 @@ The files and instructions in this directory will create a containerized instanc
 
 ## Prerequisites
 * Host machine with the docker CLI setup
+    - Use instructions here https://docs.docker.com/engine/install/ubuntu/ to install Docker engine
+    - Use https://docs.docker.com/engine/install/linux-postinstall/ to be able to run docker commands as non-root user
 * Github access
 * A valid Package Manager license file
 
