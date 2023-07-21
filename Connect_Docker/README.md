@@ -48,13 +48,6 @@ Using the docker CLI, build from within the same directory as the Dockerfile.
 $ docker build -t rstudio/connect-docker .
 ```
 
-### 4. Test that the application runs ---TO DO, update this after testing ----
-Run the application in interactive mode, so you can see any errors that might be generated.
-```
-$ docker run -it -p 4242:4242 rstudio/package_manager-docker:latest
-```
-You should be able to connect to `localhost:4242` and see Package Manager running there.
-
 ### 5. Set up a service configuration for Connect
 To have Connect start up automatically and shut down cleanly when the machine is turned off, you'll want to setup a service definition.  There is an included file in this directory that can be used as a starting point, `connect-docker.service`.  
 
