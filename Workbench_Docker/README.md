@@ -29,21 +29,26 @@ The files and instructions in this directory will create a containerized instanc
 ## Setup Steps
 
 ### 1. Update the Dockerfile to point at your lic file
-Replace "Connect_License.lic" in the Dockerfile entry below with the name of your file.
+Replace "workbench.lic" in the Dockerfile entry below with the name of your file.
 ```
 # Copy our license file into the container
-COPY Connect_License.lic /etc/rstudio-server/Connect_License.lic
+COPY workbench.lic /etc/rstudio-server/workbench.lic
 ```
 
-### 2. Change the name of the host for Package Manager
-Edit the Dockerfile and to point at the Package Manager instance you wish to use.
+### 2. Change the name of the host for Package Manager in all files
+Change all instances of "posit2" in the following files...
+- Dockerfile
+- Rprofile.site
+- repos.conf
+...to the IP address or hostname of your server.
+  
 
-In the Dockerfile, replace "posit2:4242" with the name or IP of you PM instance in the line below.
+ie. in the Dockerfile, replace "posit2" with the name or IP of you PM instance in the line below.
 ```
 RUN /opt/R/4.2.0/bin/Rscript -e 'install.packages("reticulate", repos = "http://posit2:4242/cran/__linux__/bionic/latest")'
 ```
 
-In the rstudio-connect.gcfg, replace "posit2:4242" with the name or IP of your PM instance.
+In the rstudio-connect.gcfg, replace "posit2" with the name or IP of your PM instance.
 ```
 [RPackageRepository "CRAN"]
 URL = http://posit2:4242/cran/__linux__/bionic/latest
@@ -52,39 +57,50 @@ URL = http://posit2:4242/cran/__linux__/bionic/latest
 ### 3. Build
 Using the docker CLI, build from within the same directory as the Dockerfile.
 ```
-$ docker build -t rstudio/connect-docker .
+$ docker build -t rstudio/workbench-docker .
 ```
 
-### 4. Test that the application runs ---TO DO, update this after testing ----
-Run the application in interactive mode, so you can see any errors that might be generated.
+Note: You may want to build using this command instead:
 ```
-$ docker run -it -p 4242:4242 rstudio/package_manager-docker:latest
+DOCKER_BUILDKIT=0 docker build -t rstudio/workbench-docker .
 ```
-You should be able to connect to `localhost:4242` and see Package Manager running there.
 
-### 5. Set up a service configuration for Connect
-To have Connect start up automatically and shut down cleanly when the machine is turned off, you'll want to setup a service definition.  There is an included file in this directory that can be used as a starting point, `connect-docker.service`.  
+### 5. Set up a service configuration for Workbench
+To have Workbench start up automatically and shut down cleanly when the machine is turned off, you'll want to setup a service definition.  There is an included file in this directory that can be used as a starting point, `workbench-docker.service`.  
 
 * Edit the file to reflect where on the host machine you want Connect to persist data.  In the block below:
 ```
-ExecStart=/usr/bin/docker run --rm \
-    --privileged \
+[Unit]
+Description=RStudio Workbench Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker exec workbench-docker stop
+ExecStart=/usr/bin/docker run --rm --privileged \
     --mount type=bind,source=/etc/passwd,target=/etc/passwd \
     --mount type=bind,source=/etc/shadow,target=/etc/shadow \
     --mount type=bind,source=/etc/group,target=/etc/group \
-    -v /data/connect_data:/data \
-    -v /tmp:/tmp \
-    -p 3939:3939 \
-    rstudio/connect-docker:latest
-```
-...replace the `/data/connect_data` entry to whatever file path is appropriate on your host. (Note that you should leave the `:/data` there and only modify what is to the left of the colon.)
+    -v /data/RProjects:/home \
+    -e RSW_TESTUSER="" \
+    -p 8787:8787 \
+    -p 5559:5559 \
+    rstudio/workbench-docker:latest
 
-* Move the edited `connect-docker.service` file into place, which on my Ubuntu 20.04 machine is `/etc/systemd/system/`.
+[Install]
+WantedBy=default.target
+
+```
+...replace the `/data/RProjects` entry to whatever file path is appropriate on your host. (Note that you should leave the `:/home` there and only modify what is to the left of the colon.)
+
+* Move the edited `workbench-docker.service` file into place, which on my Ubuntu 20.04 machine is `/etc/systemd/system/`.
 
 * Enable, and then start the service
 ```
-$ sudo systemctl enable connect-docker.service
-$ sudo systemctl start connect-docker.service
+$ sudo systemctl enable workbench-docker.service
+$ sudo systemctl start workbench-docker.service
 ```
 
 
