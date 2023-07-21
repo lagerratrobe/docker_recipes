@@ -48,12 +48,15 @@ Using the docker CLI, build from within the same directory as the Dockerfile.
 $ docker build -t rstudio/connect-docker .
 ```
 
-### 4. Add a RunAs user for Connect
+### 4. Add rstudio-connect user and set groups
+We need the Run As user set, and it's also handy to add other users to the same group.
 ```
 $ sudo useradd rstudio-connect
+$ sudo groupadd r-users
+sudo usermod -a -G r-users rstudio
 ```
 
-If you don't do this, you will get the following error:
+__Note:__If you don't do this, you will get the following error:
 ```
 Cannot verify the Applications.RunAs user 'rstudio-connect': user: unknown user rstudio-connect"
 ```
