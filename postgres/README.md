@@ -15,3 +15,7 @@ This Docker implementation creates a Postgres instance with the following charac
 `sudo systemctl enable postgis-docker.service`
 
 `sudo systemctl start postgis-docker.service`
+
+### To setup the Database Instance
+
+`$ psql -h posit2 -U postgres -d postgres`
