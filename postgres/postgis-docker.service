@@ -1,18 +1,18 @@
 [Unit]
-Description=Postgresql 12.15 Service
+Description=Postgis Docker Service
 After=docker.service
 Requires=docker.service
 
 [Service]
 TimeoutStartSec=0
 Restart=always
-ExecStartPre=-/usr/bin/docker exec postgres-docker stop
+ExecStartPre=-/usr/bin/docker exec postgis-docker stop
 ExecStart=/usr/bin/docker run --rm \
 	-e POSTGRES_PASSWORD=postgres \
 	-e PGDATA=/pgdata \
     -v /data/pgsql_data:/pgdata \
     -p 5432:5432 \
-    postgres-docker:latest
+    postgis-docker:latest
 
 [Install]
 WantedBy=default.target
